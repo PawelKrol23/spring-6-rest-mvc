@@ -134,5 +134,7 @@ public class BeerServiceImpl implements BeerService {
         if(beer.getQuantityOnHand() != null) {
             existingBeer.setQuantityOnHand(beer.getQuantityOnHand());
         }
+
+        existingBeer.setUpdateDate(LocalDateTime.now());
     }
 }
