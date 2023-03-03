@@ -2,7 +2,7 @@ package com.example.spring6restmvc.controller;
 
 import com.example.spring6restmvc.model.Customer;
 import com.example.spring6restmvc.services.CustomerService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("api/v1/customer")
 public class CustomerController {
