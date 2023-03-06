@@ -40,6 +40,16 @@ class BeerControllerTest {
     }
 
     @Test
+    void deleteBeer() throws Exception {
+        Beer testBeer = beerServiceImpl.listBeers().get(0);
+
+        mockMvc.perform(delete("/api/v1/beer/" + testBeer.getId()))
+                .andExpect(status().isNoContent());
+
+        verify(beerService).deleteBeer(eq(testBeer.getId()));
+    }
+
+    @Test
     void updateBeer() throws Exception {
         Beer testBeer = beerServiceImpl.listBeers().get(0);
 
