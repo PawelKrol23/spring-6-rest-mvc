@@ -6,12 +6,17 @@ import com.example.spring6restmvc.services.CustomerServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.HashMap;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -32,11 +37,31 @@ class CustomerControllerTest {
     @MockBean
     CustomerService customerService;
 
+    @Captor
+    ArgumentCaptor<Customer> customerArgumentCaptor;
+
     CustomerServiceImpl customerServiceImpl = new CustomerServiceImpl();
 
     @BeforeEach
     void setUp() {
         customerServiceImpl = new CustomerServiceImpl();
+    }
+
+    @Test
+    void patchCustomer() throws Exception {
+        Customer testCustomer = customerServiceImpl.listCustomers().get(0);
+
+        HashMap<String, Object> customerMap = new HashMap<>();
+        customerMap.put("customerName", "New name");
+
+        mockMvc.perform(patch("/api/v1/customer/" + testCustomer.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(customerMap)))
+                .andExpect(status().isNoContent());
+
+        verify(customerService).patchCustomer(eq(testCustomer.getId()), customerArgumentCaptor.capture());
+
+        assertThat(customerArgumentCaptor.getValue().getCustomerName()).isEqualTo(customerMap.get("customerName"));
     }
 
     @Test
