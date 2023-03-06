@@ -40,6 +40,16 @@ class CustomerControllerTest {
     }
 
     @Test
+    void deleteCustomer() throws Exception {
+        Customer testCustomer = customerServiceImpl.listCustomers().get(0);
+
+        mockMvc.perform(delete("/api/v1/customer/" + testCustomer.getId()))
+                .andExpect(status().isNoContent());
+
+        verify(customerService).deleteCustomer(eq(testCustomer.getId()));
+    }
+
+    @Test
     void handlePut() throws Exception {
         Customer testCustomer = customerServiceImpl.listCustomers().get(0);
 
