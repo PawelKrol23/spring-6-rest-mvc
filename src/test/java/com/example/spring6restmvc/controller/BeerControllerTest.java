@@ -6,12 +6,17 @@ import com.example.spring6restmvc.services.BeerServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.HashMap;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -32,11 +37,31 @@ class BeerControllerTest {
     @MockBean
     BeerService beerService;
 
+    @Captor
+    ArgumentCaptor<Beer> beerArgumentCaptor;
+
     BeerServiceImpl beerServiceImpl;
 
     @BeforeEach
     void setUp() {
         beerServiceImpl = new BeerServiceImpl();
+    }
+
+    @Test
+    void patchBeer() throws Exception {
+        Beer testBeer = beerServiceImpl.listBeers().get(0);
+
+        HashMap<String, Object> beerMap = new HashMap<>();
+        beerMap.put("beerName", "New name");
+
+        mockMvc.perform(patch("/api/v1/beer/" + testBeer.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(beerMap)))
+                .andExpect(status().isNoContent());
+
+        verify(beerService).patchBeer(eq(testBeer.getId()), beerArgumentCaptor.capture());
+
+        assertThat(beerArgumentCaptor.getValue().getBeerName()).isEqualTo(beerMap.get("beerName"));
     }
 
     @Test
