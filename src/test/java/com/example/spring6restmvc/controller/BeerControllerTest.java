@@ -14,9 +14,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BeerController.class)
@@ -36,6 +37,20 @@ class BeerControllerTest {
     @BeforeEach
     void setUp() {
         beerServiceImpl = new BeerServiceImpl();
+    }
+
+    @Test
+    void updateBeer() throws Exception {
+        Beer testBeer = beerServiceImpl.listBeers().get(0);
+
+
+        mockMvc.perform(put("/api/v1/beer/" + testBeer.getId())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(testBeer)))
+                .andExpect(status().isNoContent());
+
+        verify(beerService).updateBeer(eq(testBeer.getId()), any(Beer.class));
     }
 
     @Test
