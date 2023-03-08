@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -112,6 +113,15 @@ class BeerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()", is(3)));
+    }
+
+    @Test
+    void getBeerByIdNotFound() throws Exception {
+
+        given(beerService.getBeerById(any(UUID.class))).willThrow(NotFoundException.class);
+
+        mockMvc.perform(get(BeerController.BEER_PATH_ID, UUID.randomUUID()))
+                .andExpect(status().isNotFound());
     }
 
     @Test

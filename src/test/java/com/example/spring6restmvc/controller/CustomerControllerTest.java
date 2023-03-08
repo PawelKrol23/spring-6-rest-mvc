@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -111,6 +112,15 @@ class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()", is(2)));
+    }
+
+    @Test
+    void getCustomerByIdNotFound() throws Exception {
+
+        given(customerService.getCustomerById(any(UUID.class))).willThrow(NotFoundException.class);
+
+        mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, UUID.randomUUID()))
+                .andExpect(status().isNotFound());
     }
 
     @Test
