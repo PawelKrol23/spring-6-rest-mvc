@@ -19,8 +19,8 @@ public class Customer {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false)
     private UUID id;
-    @Version
     private String customerName;
+    @Version
     private Integer version;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
