@@ -1,16 +1,25 @@
-package com.example.spring6restmvc.model;
+package com.example.spring6restmvc.entities;
 
-import lombok.Builder;
-import lombok.Data;
+import com.example.spring6restmvc.model.BeerStyle;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Version;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Data
 @Builder
-public class BeerDTO {
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class Beer {
+    @Id
     private UUID id;
+    @Version
     private Integer version;
     private String beerName;
     private BeerStyle beerStyle;
